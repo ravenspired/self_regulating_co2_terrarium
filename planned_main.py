@@ -196,7 +196,7 @@ def clock_ended(start):
     else:
         return False    
     
-#boot()    
+boot()    
 
 def get_sensor_readings():
     pass
