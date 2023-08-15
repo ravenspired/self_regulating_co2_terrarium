@@ -209,6 +209,7 @@ global_time = 0
 start_tick = time.ticks_ms()
 
 while True:
+    backlight_on()
     current_time = (time.ticks_ms() - start_tick) / 1000
     control_co2, experiment_co2 = mySensor1.measure(), mySensor2.measure()
     control_hpa, experiment_hpa, plant_hpa = get_pres_hPa(bmp1, 25), get_pres_hPa(bmp2, 25), get_pres_hPa(bmp3, 25)
