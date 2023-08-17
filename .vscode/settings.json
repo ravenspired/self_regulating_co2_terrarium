@@ -7,6 +7,13 @@
         ".vscode\\Pico-W-Stub"
     ],
     "python.analysis.extraPaths": [
-        ".vscode\\Pico-W-Stub\\stubs"
-    ]
+        "",
+        "/Users/anton/.vscode/extensions/joedevivo.vscode-circuitpython-0.1.20-darwin-arm64/stubs",
+        "/Users/anton/Library/Application Support/Code/User/globalStorage/joedevivo.vscode-circuitpython/bundle/20230815/adafruit-circuitpython-bundle-py-20230815/lib"
+    ],
+    "python.linting.pylintEnabled": false,
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingModuleSource": "none"
+    },
+    "circuitpython.board.version": null
 }

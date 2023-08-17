@@ -84,6 +84,9 @@ def backlight_on():
 
 def backlight_off():
     led.value(0)
+    
+def throw_error():
+    push_screen("Oops! An\n", "error occured") 
 
 # Set up the pushbutton HID
 button = Pin(28, Pin.IN, Pin.PULL_UP)   #Internal pull-up
@@ -98,6 +101,9 @@ def check_button_press():
 # Set up the motor control
 IN1 = Pin(27, Pin.OUT)
 IN2 = Pin(26, Pin.OUT)
+
+
+
 
 
 # Set up the CO2 sensors
@@ -133,8 +139,9 @@ class MHZ19BSensor:
 
             # retry if the data is wrong
 
-            print('error while reading MH-Z19B sensor: invalid data')
-            print('retry ...')
+            #print('error while reading MH-Z19B sensor: invalid data')
+            #print('retry ...')
+            throw_error()
 
 
 
@@ -170,6 +177,7 @@ def push_screen(line1, line2):
     lcd.move_to(0,0)
     lcd.putstr(line1+"\n")
     lcd.putstr(line2)
+    
 
 
 def boot():
@@ -190,13 +198,13 @@ def boot():
         time.sleep(1)
     
 def clock_ended(start):
-    print("time: ", time.ticks_ms() - start)
+    #print("time: ", time.ticks_ms() - start)
     if time.ticks_ms() - start > 1000:
         return True
     else:
         return False    
     
-#boot()    
+boot()    
 
 def get_sensor_readings():
     pass
@@ -208,21 +216,31 @@ def pretty_time(current_time):
 global_time = 0
 start_tick = time.ticks_ms()
 
+backlight_off()
+time.sleep(0.5)
 while True:
+    backlight_on()
     current_time = (time.ticks_ms() - start_tick) / 1000
-    control_co2, experiment_co2 = mySensor1.measure(), mySensor2.measure()
-    control_hpa, experiment_hpa, plant_hpa = get_pres_hPa(bmp1, 25), get_pres_hPa(bmp2, 25), get_pres_hPa(bmp3, 25)
-    control_C, experiment_C, plant_C = get_tempC(bmp1, 25), get_tempC(bmp2, 25), get_tempC(bmp3, 25)
+    try:
+        control_co2, experiment_co2 = mySensor1.measure(), mySensor2.measure()
+        control_hpa, experiment_hpa, plant_hpa = get_pres_hPa(bmp1, 25), get_pres_hPa(bmp2, 25), get_pres_hPa(bmp3, 25)
+        control_C, experiment_C, plant_C = get_tempC(bmp1, 25), get_tempC(bmp2, 25), get_tempC(bmp3, 25)
+    except:
+        throw_error()
 
+    push_screen("                ", "                ")
     push_screen('C:' + str(control_co2)+'ppm ' + str(round(control_C, 2)) +'C', 'E:' + str(experiment_co2)+'ppm ' + str(round(experiment_C, 2)) + 'C')
     time.sleep(2.5)
     
+    push_screen("                ", "                ")
     push_screen('T: '+ pretty_time(current_time), 'Set CO2:' + str(CO2_threshold) + 'ppm')
     time.sleep(2.5)
     
+    push_screen("                ", "                ")
     push_screen('hPa: ' + str(round(plant_hpa, 2)), str(round(control_hpa, 2)) + ' ' + str(round(experiment_hpa, 2)))
     time.sleep(2.5)
     
+    push_screen("                ", "                ")
     push_screen('C:' + str(round(plant_C, 2)), str(round(control_C, 2)) + ' ' + str(round(experiment_C, 2)))
     time.sleep(2.5)
     
